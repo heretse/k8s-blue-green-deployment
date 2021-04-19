@@ -59,3 +59,22 @@ $ ./deployBlueOrGreen.sh blue
 $ kubectl rollout status deployments/deploy-test-blue-green-blue -n my-app
 $ ./moveTraffic.sh blue
 ```
+
+### Running for automatic blue-green deployment
+* Port forward to the Istio ingress controller
+```
+kubectl port-forward $(kubectl get pods --selector=istio=ingressgateway -n istio-system --no-headers -o custom-columns=NAME:.metadata.name) 8080:8080
+```
+* Add a record into your `/etc/hosts`
+```
+127.0.0.1	deploy-test.example.org
+```
+* Open your web browser and open the url with `http://deploy-test.example.org:8080`
+* You can monitor automatic blue-green deployment by the following command:
+```
+$ ./autoDeployBlueOrGreen.sh blue
+```
+or
+```
+$ ./autoDeployBlueOrGreen.sh green
+```
