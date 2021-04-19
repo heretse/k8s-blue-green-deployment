@@ -1,0 +1,11 @@
+green:
+  enabled: false
+  timestamp: "20210416184600"
+
+blue:
+  enabled: false
+  timestamp: "20210416184600"
+
+productionSlot: blue
+
+replicaCount: 3

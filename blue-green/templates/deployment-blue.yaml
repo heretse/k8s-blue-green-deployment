@@ -1,0 +1,44 @@
+{{ if .Values.blue.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "blue-green.fullname" . }}-blue
+  labels:
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ include "blue-green.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "blue-green.name" . }}
+      release: {{ .Release.Name }}
+      slot: blue
+  include:
+    metadata:
+      labels:
+        app: {{ include "blue-green.name" . }}
+        release: {{ .Release.Name }}
+        slot: blue
+    spec:
+      containers:
+        - name: {{ include "blue-green.name" . }}-blue
+          env:
+            - name: APP_COLOR
+              value: blue
+            - name: CURRENT_TIMESTAMP
+              value: "{{ .Values.blue.timestamp }}"
+          image: kodekloud/webapp-color:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # This (and the volumes section below) mount the config map as a volume.
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: wwwdata-volume
+      volumes: {}
+        - name: wwwdata-volume
+          emptyDir: {}
+{{ end }}
