@@ -10,9 +10,8 @@ elif [ "$#" -eq  "1" ];
 fi
 
 if [ $newSlot == "blue" ]; then
-	helm upgrade deploy-test . --namespace=blue-green --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
-elif [ $newSlot == "green" ];
-  then
-    helm upgrade deploy-test . --namespace=blue-green --set green.enabled=true --set green.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
+	helm upgrade deploy-test . --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
+elif [ $newSlot == "green" ]; then
+  helm upgrade deploy-test . --set green.enabled=true --set green.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
 fi
 

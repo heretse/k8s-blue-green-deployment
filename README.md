@@ -21,8 +21,9 @@ $ helm install istio-ingress manifests/charts/gateways/istio-ingress -n istio-sy
 ```
 * Create namespace - blue-green and add label for Istio auto injection
 ```
-$ kubectl create namespace blue-green
-$ kubectl label namespace blue-green istio.io/rev=1-9-3
+$ kubectl create namespace my-app
+$ kubectl label namespace my-app istio.io/rev=1-9-3
+$ kubectl config set-context --current --namespace my-app
 ```
 ### Running for blue-green deployment
 
@@ -33,7 +34,7 @@ $ cd blue-green
 
 * Blue deployment with Helm install and specific traffic to blue
 ```
-$ helm install deploy-test . --namespace=blue-green --set blue.enabled=true --set productionSlot=blue --debug
+$ helm install deploy-test . --namespace=my-app --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set productionSlot=blue --debug
 ``` 
 
 * Green deployment with Helm upgrade
@@ -43,8 +44,8 @@ $ ./deployBlueOrGreen.sh green
 
 * Checkout rolling update status is ready
 ```
-$ kubectl rollout status deployments/deploy-test-blue-green-green -n blue-green
-deployment "deploy-test-blue-green-green" successfully rolled out
+$ kubectl rollout status deployments/deploy-test-blue-green-green -n my-app
+deployment "deploy-test-my-app-green" successfully rolled out
 ```
 
 * Move traffic to green
@@ -55,6 +56,6 @@ $ ./moveTraffic.sh green
 * Repeat the steps for blue deployment again
 ```
 $ ./deployBlueOrGreen.sh blue
-$ kubectl rollout status deployments/deploy-test-blue-green-blue -n blue-green
+$ kubectl rollout status deployments/deploy-test-blue-green-blue -n my-app
 $ ./moveTraffic.sh blue
 ```

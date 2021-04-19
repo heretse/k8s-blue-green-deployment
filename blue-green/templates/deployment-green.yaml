@@ -2,32 +2,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "blue-green.fullname" . }}-green
+  name: {{ template "blue-green.fullname" . }}-green
   labels:
     release: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ include "blue-green.name" . }}
+    app: {{ template "blue-green.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "blue-green.name" . }}
+      app: {{ template "blue-green.name" . }}
       release: {{ .Release.Name }}
       slot: green
-  include:
+  template:
     metadata:
       labels:
-        app: {{ include "blue-green.name" . }}
+        app: {{ template "blue-green.name" . }}
         release: {{ .Release.Name }}
         slot: green
     spec:
       containers:
-        - name: {{ include "blue-green.name" . }}-green
+        - name: {{ template "blue-green.name" . }}-green
           env:
             - name: APP_COLOR
               value: green
             - name: CURRENT_TIMESTAMP
-              value: "{{ .Values.green.timestamp }}"
+              value: {{ .Values.green.timestamp }}
           image: kodekloud/webapp-color:latest
           imagePullPolicy: IfNotPresent
           ports:
