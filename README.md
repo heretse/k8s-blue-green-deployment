@@ -44,7 +44,7 @@ $ ./deployBlueOrGreen.sh green
 
 * Checkout rolling update status is ready
 ```
-$ kubectl rollout status deployments/deploy-test-blue-green-green -n my-app
+$ kubectl rollout status deployments/bg-deploy-green -n my-app
 deployment "deploy-test-my-app-green" successfully rolled out
 ```
 
@@ -56,7 +56,7 @@ $ ./moveTraffic.sh green
 * Repeat the steps for blue deployment again
 ```
 $ ./deployBlueOrGreen.sh blue
-$ kubectl rollout status deployments/deploy-test-blue-green-blue -n my-app
+$ kubectl rollout status deployments/bg-deploy-blue -n my-app
 $ ./moveTraffic.sh blue
 ```
 

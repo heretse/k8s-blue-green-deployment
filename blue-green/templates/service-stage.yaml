@@ -1,8 +1,7 @@
-{{- $fullName := .Release.Name -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $fullName }}-service-stage
+  name: {{ include "blue-green.name" . }}-service-stage
   labels:
     app: {{ include "blue-green.name" . }}
     chart: {{ include "blue-green.chart" . }}

@@ -11,11 +11,13 @@ fi
 
 if [ $newSlot == "blue" ]; then
 	helm upgrade deploy-test . --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
-  kubectl rollout status deployments/deploy-test-blue-green-blue
-  kubectl get virtualservice deploy-test-blue-green-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=100; yml["spec"]["http"][0]["route"][1]["weight"]=0; print(yaml.dump(yml));' | kubectl apply -f -
+  kubectl rollout status deployments/bg-deploy-blue
+  sleep 2
+  kubectl get virtualservice bg-deploy-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=100; yml["spec"]["http"][0]["route"][1]["weight"]=0; print(yaml.dump(yml));' | kubectl apply -f -
 elif [ $newSlot == "green" ]; then
   helm upgrade deploy-test . --set green.enabled=true --set green.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
-  kubectl rollout status deployments/deploy-test-blue-green-green
-  kubectl get virtualservice deploy-test-blue-green-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=0; yml["spec"]["http"][0]["route"][1]["weight"]=100; print(yaml.dump(yml));' | kubectl apply -f -
+  kubectl rollout status deployments/bg-deploy-green
+  sleep 2
+  kubectl get virtualservice bg-deploy-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=0; yml["spec"]["http"][0]["route"][1]["weight"]=100; print(yaml.dump(yml));' | kubectl apply -f -
 fi
 

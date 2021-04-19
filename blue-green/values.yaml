@@ -1,3 +1,7 @@
+nameOverride: bg-deploy
+
+fullnameOverride: bg-deploy
+
 green:
   enabled: false
   timestamp: "20210416184600"
