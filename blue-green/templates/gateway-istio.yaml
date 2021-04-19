@@ -12,7 +12,7 @@ spec:
       name: http-tracing
       protocol: HTTP
     hosts:
-    - winston-test.nextdrive.io
+    - deploy-test.example.org
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -20,7 +20,7 @@ metadata:
   name: {{ include "blue-green.fullname" . }}-vs
 spec:
   hosts:
-  - winston-test.nextdrive.io
+  - deploy-test.example.org
   gateways:
   - {{ include "blue-green.fullname" . }}-gateway
   http:
