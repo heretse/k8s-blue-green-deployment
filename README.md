@@ -19,10 +19,19 @@ $ helm install istio-base manifests/charts/base -n istio-system
 $ helm install istiod manifests/charts/istio-control/istio-discovery -n istio-system
 $ helm install istio-ingress manifests/charts/gateways/istio-ingress -n istio-system
 ```
-* Create namespace - blue-green and add label for Istio auto injection
+
+* Create namespace - my-app
 ```
 $ kubectl create namespace my-app
+```
+
+* Add label for Istio auto injection
+```
 $ kubectl label namespace my-app istio.io/rev=1-9-3
+```
+
+* Config default namespace to my-app
+```
 $ kubectl config set-context --current --namespace my-app
 ```
 ### Running for blue-green deployment
@@ -78,3 +87,6 @@ or
 ```
 $ ./autoDeployBlueOrGreen.sh green
 ```
+* Monitor the website changes
+![All traffic to blue](images/ph0bn-7s7gs.gif)
+![All traffic to green](images/ylcou-ev0rk.gif)
