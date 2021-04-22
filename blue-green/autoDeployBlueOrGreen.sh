@@ -1,23 +1,22 @@
 #!/bin/bash
 
-if [ "$#" -eq  "0" ];
-  then
-    echo "No arguments supplied"
-    exit 1
-elif [ "$#" -eq  "1" ];
-  then
-    newSlot=$1
+currentSlot=$(helm get values --all deploy-test | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); print(yml["productionSlot"]);')
+
+if [ $currentSlot == "blue" ]; then
+  newSlot=green
+elif [ $currentSlot == "green" ]; then
+  newSlot=blue
 fi
 
 if [ $newSlot == "blue" ]; then
 	helm upgrade deploy-test . --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
   kubectl rollout status deployments/bg-deploy-blue
   sleep 2
-  kubectl get virtualservice bg-deploy-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=100; yml["spec"]["http"][0]["route"][1]["weight"]=0; print(yaml.dump(yml));' | kubectl apply -f -
+  helm upgrade deploy-test . --set productionSlot=blue --reuse-values --debug
 elif [ $newSlot == "green" ]; then
   helm upgrade deploy-test . --set green.enabled=true --set green.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --reuse-values --debug
   kubectl rollout status deployments/bg-deploy-green
   sleep 2
-  kubectl get virtualservice bg-deploy-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=0; yml["spec"]["http"][0]["route"][1]["weight"]=100; print(yaml.dump(yml));' | kubectl apply -f -
+  helm upgrade deploy-test . --set productionSlot=green --reuse-values --debug
 fi
 

@@ -6,13 +6,11 @@ if [ "$#" -eq  "0" ];
     exit 1
 elif [ "$#" -eq  "1" ];
   then
-    currentSlot=$1
+    newSlot=$1
 fi
 
-if [ $currentSlot == "blue" ]; then
-    kubectl get virtualservice bg-deploy-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=100; yml["spec"]["http"][0]["route"][1]["weight"]=0; print(yaml.dump(yml));' | kubectl apply -f -
-elif [ $currentSlot == "green" ]; then
-    kubectl get virtualservice bg-deploy-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); yml["spec"]["http"][0]["route"][0]["weight"]=0; yml["spec"]["http"][0]["route"][1]["weight"]=100; print(yaml.dump(yml));' | kubectl apply -f -
+if [ $newSlot == "blue" ]; then
+    helm upgrade deploy-test . --set productionSlot=blue --reuse-values --debug
+elif [ $newSlot == "green" ]; then
+    helm upgrade deploy-test . --set productionSlot=green --reuse-values --debug
 fi
-
-# kubectl get virtualservice bg-deploy-vs -o yaml | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); print(yaml.dump(yml["spec"]["http"][0]["route"]));'
