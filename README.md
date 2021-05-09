@@ -43,7 +43,7 @@ $ cd blue-green
 
 * Blue deployment with Helm install and specific traffic to blue
 ```
-$ helm install deploy-test . --namespace=my-app --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set productionSlot=blue --debug
+$ helm install deploy-test . --namespace=my-app --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set blue.appVersion="1.0" --set green.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set green.appVersion="1.0" --set productionSlot=blue --debug
 ``` 
 
 * Green deployment with Helm upgrade

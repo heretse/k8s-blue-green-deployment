@@ -5,19 +5,22 @@ metadata:
   name: {{ template "blue-green.fullname" . }}-blue
   labels:
     release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "blue-green.name" . }}
+    version: {{ .Values.blue.appVersion | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "blue-green.name" . }}
+      version: {{ .Values.blue.appVersion | quote }}
       release: {{ .Release.Name }}
       slot: blue
   template:
     metadata:
       labels:
         app: {{ template "blue-green.name" . }}
+        version: {{ .Values.blue.appVersion | quote }}
         release: {{ .Release.Name }}
         slot: blue
     spec:

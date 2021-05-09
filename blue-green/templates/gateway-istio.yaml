@@ -7,7 +7,7 @@ spec:
     istio: ingressgateway
   servers:
   - port:
-      number: 8080
+      number: 80
       name: http-tracing
       protocol: HTTP
     hosts:
@@ -25,7 +25,7 @@ spec:
   http:
   - route:
     - destination:
-        host: {{ include "blue-green.name" . }}-service-prod
+        host: {{ include "blue-green.name" . }}-service-blue
         port:
           number: 8080
     {{- if eq .Values.productionSlot "blue" }}
@@ -34,7 +34,7 @@ spec:
       weight: 0
     {{- end }}
     - destination:
-        host: {{ include "blue-green.name" . }}-service-stage
+        host: {{ include "blue-green.name" . }}-service-green
         port:
           number: 8080
     {{- if eq .Values.productionSlot "blue" }}
