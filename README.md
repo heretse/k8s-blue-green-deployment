@@ -20,7 +20,7 @@ $ helm install istiod manifests/charts/istio-control/istio-discovery -n istio-sy
 $ helm install istio-ingress manifests/charts/gateways/istio-ingress -n istio-system
 ```
 
-* Create namespace - my-app
+* Create new namespace - my-app
 ```
 $ kubectl create namespace my-app
 ```
@@ -36,19 +36,20 @@ $ kubectl config set-context --current --namespace my-app
 ```
 ### Running for blue-green deployment
 
-* Change directory to blue-green helm chart
+* Change directory to the root folder of blue-green helm chart
 ```
 $ cd blue-green
 ```
 
-* Blue deployment with Helm install and specific traffic to blue
+* The first time deploy the blue and green deployment with the version "1.0" for both slots by the Helm install command and than switch traffic to blue
 ```
 $ helm install deploy-test . --namespace=my-app --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set blue.appVersion="1.0" --set green.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set green.appVersion="1.0" --set productionSlot=blue --debug
 ``` 
 
-* Green deployment with Helm upgrade
+* Deploy the green deployment with the new version "xx.xx"  by the Helm upgrade command
 ```
-$ ./deployBlueOrGreen.sh green
+# You can define new version for this release to replace "xx.xx"
+$ ./deployBlueOrGreen.sh green xx.xx
 ```
 
 * Checkout rolling update status is ready
@@ -57,14 +58,15 @@ $ kubectl rollout status deployments/bg-deploy-green -n my-app
 deployment "deploy-test-my-app-green" successfully rolled out
 ```
 
-* Move traffic to green
+* Switch the traffic to green 
 ```
-$ ./moveTraffic.sh green
+$ ./switchTraffic.sh green
 ```
 
-* Repeat the steps for blue deployment again
+* Repeat the steps for upgrading the blue deployment with new version again
 ```
-$ ./deployBlueOrGreen.sh blue
+# You can define new version for this release to replace "xx.xx"
+$ ./deployBlueOrGreen.sh blue xx.xx
 $ kubectl rollout status deployments/bg-deploy-blue -n my-app
 $ ./moveTraffic.sh blue
 ```
@@ -81,11 +83,8 @@ kubectl port-forward $(kubectl get pods --selector=istio=ingressgateway -n istio
 * Open your web browser and open the url with `http://deploy-test.example.org:8080`
 * You can monitor automatic blue-green deployment by the following command:
 ```
-$ ./autoDeployBlueOrGreen.sh blue
-```
-or
-```
-$ ./autoDeployBlueOrGreen.sh green
+# You can define new version for this release to replace "xx.xx"
+$ ./autoDeployBlueOrGreen.sh xx.xx
 ```
 * Monitor the website changes
 ![All traffic to blue](images/ph0bn-7s7gs.gif)

@@ -1,7 +1,5 @@
 nameOverride: bg-deploy
 
-fullnameOverride: bg-deploy
-
 green:
   appVersion: 1.0
   enabled: false

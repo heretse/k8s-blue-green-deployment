@@ -6,11 +6,13 @@ if [ "$#" -eq  "0" ];
     exit 1
 elif [ "$#" -eq  "1" ];
   then
-    newSlot=$1
+    newSlot=$
+    echo "Start to deploy on slot: $newSlot"
 elif [ "$#" -eq  "2" ];
   then
     newSlot=$1
     appVersion=$2
+    echo "Start to deploy on slot: $newSlot with version: $appVersion"
 fi
 
 if [ $newSlot == "blue" ]; then
