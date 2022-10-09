@@ -1,6 +1,6 @@
 #!/bin/bash
 
-currentSlot=$(helm get values --all deploy-test | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); print(yml["productionSlot"]);')
+currentSlot=$((helm get values --all deploy-test) || echo 'productionSlot: green') | python -c 'import sys,yaml; yml = yaml.safe_load(sys.stdin); print(yml["productionSlot"]);')
 
 if [ $currentSlot == "blue" ]; then
   newSlot=green
@@ -17,7 +17,7 @@ echo "Start to deploy on slot: $newSlot with version: $newAppVersion"
 
 if [ $newSlot == "blue" ]; then
   kubectl delete deployments/bg-deploy-blue
-	helm upgrade deploy-test . --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set blue.appVersion=$newAppVersion --reuse-values --debug
+  helm upgrade deploy-test . --set blue.enabled=true --set blue.timestamp="$(date '+%Y-%m-%d %H:%M:%S')" --set blue.appVersion=$newAppVersion --reuse-values --debug
   kubectl rollout status deployments/bg-deploy-blue
   sleep 2
   helm upgrade deploy-test . --set productionSlot=blue --reuse-values --debug
